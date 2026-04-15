@@ -7,6 +7,7 @@ const json = fs.readFileSync('credentials.json', 'utf8');
 const credentials = JSON.parse(json);
 const connection = mysql.createConnection(credentials);
 
+
 service.use(express.json());
 
 connection.connect(error => {
@@ -15,6 +16,7 @@ connection.connect(error => {
     process.exit(1);
   }
 });
+
 service.use((request, response, next) => {
     response.set('Access-Control-Allow-Origin', '*');
     next();
@@ -251,6 +253,7 @@ service.patch('/blockLoaners/:id', (request, response) => {
 
 
 // PORT THE PROGRAM IS ALIVE ON
+
 const port = 5001;
 service.listen(port, () => {
   console.log(`I am alive on port ${port}!`);
