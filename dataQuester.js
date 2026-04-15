@@ -1,0 +1,257 @@
+const fs = require('fs');
+const express = require('express');
+const service = express();
+const mysql = require('mysql');
+const { request } = require('https');
+const json = fs.readFileSync('credentials.json', 'utf8');
+const credentials = JSON.parse(json);
+const connection = mysql.createConnection(credentials);
+
+service.use(express.json());
+
+connection.connect(error => {
+  if (error) {
+    console.error(error);
+    process.exit(1);
+  }
+});
+service.use((request, response, next) => {
+    response.set('Access-Control-Allow-Origin', '*');
+    next();
+});
+service.options('*', (request, response) => {
+    response.set('Access-Control-Allow-Headers', 'Content-Type');
+    response.set('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE');
+    response.sendStatus(200);
+});
+//THIS SHOULD BE FOR GETTING ALL BLOCK LOANERS AND WHO CHECKED THEM OUT LAST
+
+//RECIEVE ALL INSERTS HERE
+function rowOfStudent(row) {
+    return {
+        id: row.id,
+        email: row.email,
+        first_name: row.first_name,
+        last_name: row.last_name,
+        username: row.username,
+    }
+}
+function rowOfBL(row) {
+  return {
+    loanerNumber: row.loanerNumber,
+    id: row.id,
+    serialNumber: row.serialNumber,
+    blStatus: row.blStatus,
+  }
+}
+function rowOfResponses(row) {
+  return {
+    checkedTime: row.checkedTime,
+    blStatus: row.blStatus,
+    email: row.email,
+    reason: row.reason,
+    blockLoaner: row.blockLoaner,
+  }
+}
+
+function rowOfLoanerStatuses(row) {
+  return {
+    loanerNumber: row.loanerNumber,
+    inOut: row.inOut,
+    firstName: row.firstName,
+    lastName: row.lastName,
+    checkedTime: row.checkedTime,
+  }
+}
+
+/*
+THERE ARE ONLY GET REQUESTS FROM HERE ON OUT
+*/
+// GET ALL BLOCK LOANERS WHETHER THEY ARE IN OR OUT
+service.get('blockLoaners', (request, response) => {
+  const query = "SELECT bl.loanerNumber, bl.inOut, st.firstName, st.lastName, fr.checkedTime FROM Blockloaners bl INNER JOIN FormResponses fr on bl.loanerNumber = fr.blockLoaner INNER JOIN Students st on fr.email = st.email;"
+  connection.query(query, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok:true,
+        results: rows.map(rowOfLoanerStatuses)
+      })
+    }
+  });
+});
+
+/*
+ASK ABOUT HOW THE LATE RETURNER THINGS WORK, DOSE IT GO INTO THE NEXT DAY AND WHAT DOES
+RE-ELIGIBLE MEAN
+CAN I EVEN CONNECT THIS APP WITH GOOGLE APIS TO LOCK CERTAIN LAPTOPS?
+*/
+
+
+/*
+THERE ARE POST REQUESTS FROM HERE ON OUT
+*/
+
+//UPLOAD INFORMATION ABOUT BLOCK LOANER
+service.post('/blockLoaners', (request, response) => {
+  if (request.body.hasOwnProperty('loanerNumber') &&
+  request.body.hasOwnProperty('id') &&
+  request.body.hasOwnProperty('serialNumber') &&
+  request.body.hasOwnProperty('blStatus')) {
+    //PUT THE PARAMETERS HERE IN SAME ORDER
+    const parameters = [
+      parseInt(request.body.loanerNumber),
+      parseInt(request.body.id),
+      request.body.serialNumber,
+      parseInt(request.body.blStatus)
+    ];
+    
+    //PUT THE QUERY HERE IN THE SAME ORDER
+    const query = 'INSERT INTO BlockLoaners (loanerNumber, id, serial, inOut) VALUES (?, ?, ?, ?)';
+    connection.query(query, parameters, (error, result) => {
+      if (error) {
+        response.status(500);
+        response.json({
+          ok: false,
+          results: error.message,
+        });
+      }
+      else {
+        response.json({
+          ok: true,
+          result: result.insertId,
+        });
+      }
+    });
+  }
+  else {
+    response.status(400);
+    response.json({
+      ok: false,
+      results: 'YOU DIDN"T PUT IN THE CORRECT VALUES FOR BLOCK LOANERS, CHECK THEM AGAIN!!!',
+    });
+  }
+});
+//UPLOAD INFORMATION ABOUT A SUTDENT
+service.post('/students', (request, response) => {
+  if (request.body.hasOwnProperty('id') &&
+  request.body.hasOwnProperty('email') &&
+  request.body.hasOwnProperty('first_name') &&
+  request.body.hasOwnProperty('last_name') &&
+  request.body.hasOwnProperty('username')) {
+    const parameters = [
+      parseInt(request.body.id),
+      request.body.email,
+      request.body.first_name,
+      request.body.last_name,
+      request.body.username
+    ];
+    const query = 'INSERT INTO Students (id, email, first_name, last_name, username) VALUES (?, ?, ?, ?, ?)';
+    connection.query(query, parameters, (error, result) => {
+      if (error) {
+        response.status(500);
+        response.json({
+          ok: false,
+          results: error.message,
+        });
+      }
+      else {
+        response.json({
+          ok: true,
+          result: result.insertId,
+        });
+      }
+    });
+  }
+  else {
+    response.status(400);
+    response.json({
+      ok: false,
+      results: 'YOU DIDN"T PUT IN THE CORRECT VALUES FOR STUDENTS, CHECK THEM AGAIN!!!',
+    });
+  }
+});
+//UPLOAD FORM RESPONSES
+service.post('/formResponses', (request, response) => {
+  if (request.body.hasOwnProperty('checkedTime') &&
+      request.body.hasOwnProperty('blStatus') &&
+      request.body.hasOwnProperty('email') &&
+      request.body.hasOwnProperty('reason') &&
+      request.body.hasOwnProperty('blockLoaner')) {
+    const parameters = [
+      request.body.checkedTime,
+      parseInt(request.body.blStatus),
+      request.body.email,
+      request.body.reason,
+      parseInt(request.body.blockLoaner)
+    ];
+    const query = 'INSERT INTO FormResponses (checkedTime, blStatus, email, reason, blockLoaner) VALUES (?, ?, ?, ?, ?)';
+    connection.query(query, parameters, (error, result) => {
+      if (error) {
+        response.status(500);
+        response.json({
+          ok: false,
+          results: error.message,
+        });
+      }
+      else {
+        response.json({
+          ok: true,
+          result: result.insertId,
+        });
+      }
+    });
+  }
+  else {
+    response.status(400);
+    response.json({
+      ok: false,
+      results: 'YOU DIDN"T PUT IN THE CORRECT VALUES FOR FORM RESPONSES, CHECK THEM AGAIN!!!',
+    });
+  }
+});
+
+/*
+THIS IS WHERE THE PATCH REQUESTS START, SHOULD BE UPDATING BLOCK LOANERS IN CASE THEY BREAK,
+AND OTHER THINGS I WILL THINK OF AT SOME POINT
+*/
+
+
+service.patch('/blockLoaners/:id', (request, response) => {
+  const parameters = [
+    request.body.loanerNumber,
+    parseInt(request.body.id),
+    request.body.serialNumber,
+    request.body.inOut
+  ];
+
+  const query = 'UPDATE BlockLoaners SET loanerNumber = ?, id = ?, serial = ?, inOut = ? WHERE id = ?';
+  connection.query(query, parameters, (error, result) => {
+    if (error) {
+      response.status(404);
+      response.json({
+        ok: false,
+        results: 'THERE WAS AN ERROR UPDATING THE BLOCK LOANER, CHECK YOUR VALUES AND TRY AGAIN!!!',
+      });
+    }
+    else {
+      response.json({
+        ok: true,
+        results: 'BLOCK LOANER UPDATED SUCCESSFULLY!!!'
+      });
+    }
+  });
+});
+
+
+// PORT THE PROGRAM IS ALIVE ON
+const port = 5001;
+service.listen(port, () => {
+  console.log(`I am alive on port ${port}!`);
+});
