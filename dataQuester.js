@@ -279,7 +279,32 @@ THIS IS WHERE THE PATCH REQUESTS START, SHOULD BE UPDATING BLOCK LOANERS IN CASE
 AND OTHER THINGS I WILL THINK OF AT SOME POINT
 */
 
+//THIS IS FOR UPDATING THE STATUS OF A BLOCK LOANER FOR CHECK INS AND CHECK OUTS
+service.patch('/blockLoanersStatus/:loanerNumber', (request, response) => {
+  const parameters = [
+    parseInt(request.body.blStatus),
+    parseInt(request.params.loanerNumber)
+  ];
 
+  const query = 'UPDATE BlockLoaners SET blStatus = ? WHERE loanerNumber = ?';
+  connection.query(query, parameters, (error, result) => {
+    if (error) {
+      response.status(404);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok: true,
+        results: 'Loaner status updated successfully!'
+      })
+    }
+  })
+})
+
+// THIS IS FOR UPDATING AN ENTIRE BLOCK LOANER IN CASE IT BREAKS OR SOMETHING
 service.patch('/blockLoaners/:loanerNumber', (request, response) => {
   const parameters = [
     parseInt(request.body.loanerNumber),
