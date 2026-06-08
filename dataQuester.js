@@ -294,7 +294,7 @@ service.patch('/blockLoaners/:id', (request, response) => {
       response.status(404);
       response.json({
         ok: false,
-        results: 'THERE WAS AN ERROR UPDATING THE BLOCK LOANER, CHECK YOUR VALUES AND TRY AGAIN!!!',
+        results: error.message,
       });
     }
     else {
