@@ -285,7 +285,7 @@ service.patch('/blockLoaners/:loanerNumber', (request, response) => {
     parseInt(request.body.loanerNumber),
     parseInt(request.body.id),
     request.body.serialNumber,
-    parseInt(request.body.blStatus)
+    parseInt(request.body.blStatus),
   ];
 
   const query = 'UPDATE BlockLoaners SET loanerNumber = ?, id = ?, serialNumber = "p208vjyq", blStatus = ? WHERE loanerNumber = ?';
