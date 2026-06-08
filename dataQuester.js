@@ -4,7 +4,7 @@ const service = express();
 const mysql = require('mysql');
 const { request } = require('https');
 const json = fs.readFileSync('credentials.json', 'utf8');
-const credentials = JSON.parse(json);
+const credentials = JSON.parse(fs.readFileSync('credentials.json', 'utf8'));
 const connection = mysql.createConnection(credentials);
 
 
