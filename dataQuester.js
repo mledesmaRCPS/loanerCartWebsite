@@ -282,7 +282,7 @@ AND OTHER THINGS I WILL THINK OF AT SOME POINT
 
 service.patch('/blockLoaners/:loanerNumber', (request, response) => {
   const parameters = [
-    request.body.loanerNumber,
+    parseInt(request.body.loanerNumber),
     parseInt(request.body.id),
     request.body.serialNumber,
     parseInt(request.body.blStatus)
