@@ -288,7 +288,7 @@ service.patch('/blockLoaners/:loanerNumber', (request, response) => {
     parseInt(request.body.blStatus)
   ];
 
-  const query = 'UPDATE BlockLoaners SET loanerNumber = 1, id = 2002765, serialNumber = "p208vjyq", blStatus = 1 WHERE loanerNumber = ?';
+  const query = 'UPDATE BlockLoaners SET loanerNumber = 1, id = 2002765, serialNumber = "p208vjyq", blStatus = ? WHERE loanerNumber = ?';
   connection.query(query, parameters, (error, result) => {
     if (error) {
       response.status(404);
