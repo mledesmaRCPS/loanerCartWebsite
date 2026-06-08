@@ -280,7 +280,7 @@ AND OTHER THINGS I WILL THINK OF AT SOME POINT
 */
 
 
-service.patch('/blockLoaners/:id', (request, response) => {
+service.patch('/blockLoaners/:loanerNumber', (request, response) => {
   const parameters = [
     request.body.loanerNumber,
     parseInt(request.body.id),
@@ -288,7 +288,7 @@ service.patch('/blockLoaners/:id', (request, response) => {
     parseInt(request.body.blStatus)
   ];
 
-  const query = 'UPDATE BlockLoaners SET loanerNumber = ?, id = ?, serialNumber = ?, blStatus = ? WHERE id = ?';
+  const query = 'UPDATE BlockLoaners SET loanerNumber = ?, id = ?, serialNumber = ?, blStatus = ? WHERE loanerNumber = ?';
   connection.query(query, parameters, (error, result) => {
     if (error) {
       response.status(404);
