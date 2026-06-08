@@ -68,7 +68,7 @@ THERE ARE ONLY GET REQUESTS FROM HERE ON OUT
 */
 // GET ALL BLOCK LOANERS WHETHER THEY ARE IN OR OUT
 service.get('/blockLoaners', (request, response) => {
-  const query = "SELECT bl.loanerNumber, bl.inOut, st.firstName, st.lastName, fr.checkedTime FROM Blockloaners bl INNER JOIN FormResponses fr on bl.loanerNumber = fr.blockLoaner INNER JOIN Students st on fr.email = st.email;"
+  const query = "SELECT bl.loanerNumber, bl.inOut, st.firstName, st.lastName, fr.checkedTime FROM BlockLoaners bl INNER JOIN FormResponses fr on bl.loanerNumber = fr.blockLoaner INNER JOIN Students st on fr.email = st.email;"
   connection.query(query, (error, rows) => {
     if (error) {
       response.status(500);
