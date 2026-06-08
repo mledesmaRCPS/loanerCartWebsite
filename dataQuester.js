@@ -6,9 +6,6 @@ const { request } = require('https');
 const credentials = JSON.parse(fs.readFileSync('credentials.json', 'utf8'));
 const connection = mysql.createConnection(credentials);
 
-
-service.use(express.json());
-
 connection.connect(error => {
   if (error) {
     console.error(error);
@@ -65,6 +62,7 @@ function rowOfLoanerStatuses(row) {
   }
 }
 
+service.use(express.json());
 /*
 THERE ARE ONLY GET REQUESTS FROM HERE ON OUT
 */
