@@ -243,7 +243,6 @@ service.post('/formResponses', (request, response) => {
       request.body.hasOwnProperty('reason') &&
       request.body.hasOwnProperty('blockLoaner')) {
     const parameters = [
-      request.body.checkedTime,
       parseInt(request.body.blStatus),
       request.body.email,
       request.body.reason,
