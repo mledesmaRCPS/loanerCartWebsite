@@ -250,7 +250,7 @@ service.post('/formResponses', (request, response) => {
       request.body.reason,
       parseInt(request.body.blockLoaner)
     ];
-    const query = 'INSERT INTO FormResponses (checkedTime, blStatus, email, reason, blockLoaner) VALUES (?, ?, ?, ?, ?)';
+    const query = 'INSERT INTO FormResponses (checkedTime, blStatus, email, reason, blockLoaner) VALUES (CURRENT_TIMESTAMP, ?, ?, ?, ?)';
     connection.query(query, parameters, (error, result) => {
       if (error) {
         response.status(500);
