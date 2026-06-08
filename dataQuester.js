@@ -67,6 +67,25 @@ service.use(express.json());
 THERE ARE ONLY GET REQUESTS FROM HERE ON OUT
 */
 // GET ALL BLOCK LOANERS WHETHER THEY ARE IN OR OUT
+service.get('/block-loaners', (request, response) => {
+  const query = "SELECT * FROM BlockLoaners;";
+  connection.query(query, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok:true,
+        results: rows.map(rowOfBL)
+      })
+    }
+  });
+});
+
 service.get('/blockLoaners', (request, response) => {
   const query = "SELECT bl.loanerNumber, bl.blStatus, st.first_name, st.last_name, fr.checkedTime FROM BlockLoaners bl INNER JOIN FormResponses fr on bl.loanerNumber = fr.blockLoaner INNER JOIN Students st on fr.email = st.email;"
   connection.query(query, (error, rows) => {
