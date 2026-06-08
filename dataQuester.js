@@ -238,8 +238,7 @@ service.post('/students', (request, response) => {
 });
 //UPLOAD FORM RESPONSES
 service.post('/formResponses', (request, response) => {
-  if (request.body.hasOwnProperty('checkedTime') &&
-      request.body.hasOwnProperty('blStatus') &&
+  if (request.body.hasOwnProperty('blStatus') &&
       request.body.hasOwnProperty('email') &&
       request.body.hasOwnProperty('reason') &&
       request.body.hasOwnProperty('blockLoaner')) {
