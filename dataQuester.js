@@ -55,9 +55,9 @@ function rowOfResponses(row) {
 function rowOfLoanerStatuses(row) {
   return {
     loanerNumber: row.loanerNumber,
-    inOut: row.inOut,
-    firstName: row.firstName,
-    lastName: row.lastName,
+    inOut: row.blStatus,
+    firstName: row.first_name,
+    lastName: row.last_name,
     checkedTime: row.checkedTime,
   }
 }
@@ -66,7 +66,7 @@ service.use(express.json());
 /*
 THERE ARE ONLY GET REQUESTS FROM HERE ON OUT
 */
-// GET ALL BLOCK LOANERS WHETHER THEY ARE IN OR OUT
+// GET ALL BLOCK LOANERS
 service.get('/block-loaners', (request, response) => {
   const query = "SELECT * FROM BlockLoaners;";
   connection.query(query, (error, rows) => {
@@ -86,6 +86,47 @@ service.get('/block-loaners', (request, response) => {
   });
 });
 
+// GET ALL STUDENTS
+service.get('/students', (request, response) => {
+  const query = "SELECT * FROM Students;";
+  connection.query(query, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok:true,
+        results: rows.map(rowOfStudent)
+      })
+    }
+  });
+});
+
+// GET ALL FORM RESPONSES
+service.get('/form-responses', (request, response) => {
+  const query = "SELECT * FROM FormResponses;";
+  connection.query(query, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok:true,
+        results: rows.map(rowOfResponses)
+      })
+    }
+  });
+});
+
+// GET ALL BLOCK LOANERS AND WHO CHECK THEM OUT OR IF THEY ARE IN WITH TIMES
 service.get('/blockLoaners', (request, response) => {
   const query = "SELECT bl.loanerNumber, bl.blStatus, st.first_name, st.last_name, fr.checkedTime FROM BlockLoaners bl INNER JOIN FormResponses fr on bl.loanerNumber = fr.blockLoaner INNER JOIN Students st on fr.email = st.email;"
   connection.query(query, (error, rows) => {
