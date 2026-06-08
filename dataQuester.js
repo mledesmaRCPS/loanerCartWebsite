@@ -85,6 +85,45 @@ service.get('/block-loaners', (request, response) => {
     }
   });
 });
+// GET ALL BLOCK LOANERS THAT ARE IN
+service.get('/block-loaners-in', (request, response) => {
+  const query = "SELECT * FROM BlockLoaners WHERE blStatus = 1";
+  connection.query(query, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok: true,
+        results: rows.map(rowOfBL),
+      });
+    }
+  });
+})
+
+// GET ALL BLOCK LOANERS THAT ARE OUT
+service.get('/block-loaners-out', (request, response) => {
+  const query = "SELECT * FROM BlockLoaners WHERE blStatus = 0";
+  connection.query(query, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok: true,
+        results: rows.map(rowOfBL),
+      });
+    }
+  });
+});
 
 // GET ALL STUDENTS
 service.get('/students', (request, response) => {
