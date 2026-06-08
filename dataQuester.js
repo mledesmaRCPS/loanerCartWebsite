@@ -112,7 +112,7 @@ service.post('/blockLoaners', (request, response) => {
     ];
     
     //PUT THE QUERY HERE IN THE SAME ORDER
-    const query = 'INSERT INTO BlockLoaners (loanerNumber, id, serial, inOut) VALUES (?, ?, ?, ?)';
+    const query = 'INSERT INTO BlockLoaners (loanerNumber, id, serialNumber, blStatus) VALUES (?, ?, ?, ?)';
     connection.query(query, parameters, (error, result) => {
       if (error) {
         response.status(500);
@@ -227,10 +227,10 @@ service.patch('/blockLoaners/:id', (request, response) => {
     request.body.loanerNumber,
     parseInt(request.body.id),
     request.body.serialNumber,
-    request.body.inOut
+    parseInt(request.body.blStatus)
   ];
 
-  const query = 'UPDATE BlockLoaners SET loanerNumber = ?, id = ?, serial = ?, inOut = ? WHERE id = ?';
+  const query = 'UPDATE BlockLoaners SET loanerNumber = ?, id = ?, serialNumber = ?, blStatus = ? WHERE id = ?';
   connection.query(query, parameters, (error, result) => {
     if (error) {
       response.status(404);
