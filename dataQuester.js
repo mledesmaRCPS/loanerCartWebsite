@@ -319,13 +319,35 @@ AND OTHER THINGS I WILL THINK OF AT SOME POINT
 */
 
 //THIS IS FOR UPDATING THE STATUS OF A BLOCK LOANER FOR CHECK INS AND CHECK OUTS
-service.patch('/blockLoanersStatus/:loanerNumber', (request, response) => {
+service.patch('/blockLoanerOut/:loanerNumber', (request, response) => {
   const parameters = [
-    parseInt(request.body.blStatus),
     parseInt(request.params.loanerNumber)
   ];
 
-  const query = 'UPDATE BlockLoaners SET blStatus = ? WHERE loanerNumber = ?';
+  const query = 'UPDATE BlockLoaners SET blStatus = 0 WHERE loanerNumber = ?';
+  connection.query(query, parameters, (error, result) => {
+    if (error) {
+      response.status(404);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok: true,
+        results: 'Loaner status updated successfully!'
+      })
+    }
+  })
+})
+
+service.patch('/blockLoanerIn/:loanerNumber', (request, response) => {
+  const parameters = [
+    parseInt(request.params.loanerNumber)
+  ];
+
+  const query = 'UPDATE BlockLoaners SET blStatus = 1 WHERE loanerNumber = ?';
   connection.query(query, parameters, (error, result) => {
     if (error) {
       response.status(404);
