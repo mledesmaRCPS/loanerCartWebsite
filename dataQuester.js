@@ -144,6 +144,27 @@ service.get('/students', (request, response) => {
     }
   });
 });
+// GET STUDENT BY USERNAME
+service.get('/students/:username', (request, response) => {
+  const query = "SELECT 1 FROM Students WHERE username = ? LIMIT 1;";
+  params = [request.params.username];
+
+  connection.query(query, params, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok:true,
+        results: rows.map(rowOfStudent)
+      })
+    }
+  });
+});
 
 // GET ALL FORM RESPONSES
 service.get('/form-responses', (request, response) => {
