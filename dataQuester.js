@@ -146,7 +146,7 @@ service.get('/students', (request, response) => {
 });
 // GET STUDENT BY USERNAME
 service.get('/students/:username', (request, response) => {
-  const query = "SELECT 1 FROM Students WHERE username = ? LIMIT 1;";
+  const query = "SELECT username FROM Students WHERE username = ? LIMIT 1;";
   params = [request.params.username];
 
   connection.query(query, params, (error, rows) => {
