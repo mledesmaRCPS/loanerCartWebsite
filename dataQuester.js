@@ -62,6 +62,12 @@ function rowOfLoanerStatuses(row) {
   }
 }
 
+function rowOfConfirmedStudent(row) {
+  return {
+    username: row.username,
+  }
+}
+
 service.use(express.json());
 /*
 THERE ARE ONLY GET REQUESTS FROM HERE ON OUT
@@ -160,7 +166,7 @@ service.get('/students/:username', (request, response) => {
     else {
       response.json({
         ok:true,
-        results: rows.map(rowOfStudent)
+        results: rows.map(rowOfConfirmedStudent)
       })
     }
   });
