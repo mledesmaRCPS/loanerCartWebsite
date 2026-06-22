@@ -335,7 +335,7 @@ service.post('/formResponses', (request, response) => {
     response.status(400);
     response.json({
       ok: false,
-      results: parameters,
+      results: result.blStatus,
     });
   }
 });
