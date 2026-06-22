@@ -67,6 +67,9 @@ function rowOfConfirmedStudent(row) {
     username: row.username,
   }
 }
+function rowOfEmail(row) {
+  return {email: row.email,}
+}
 
 service.use(express.json());
 /*
@@ -188,6 +191,27 @@ service.get('/form-responses', (request, response) => {
         ok:true,
         results: rows.map(rowOfResponses)
       })
+    }
+  });
+});
+
+service.get('form-responses/:blockLoaner', (request, response) => {
+  const query = "SELECT email FROM FormResponses WHERE blockloaner = ? ORDER BY checkedTime DESC LIMIT 1;";
+  params =[request.params.blockLoaner]
+
+  connection.query(query, params, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok: true,
+        results: rows.map(rowOfEmail)
+      });
     }
   });
 });
