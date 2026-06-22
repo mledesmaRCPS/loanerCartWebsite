@@ -195,8 +195,8 @@ service.get('/form-responses', (request, response) => {
   });
 });
 
-service.get('form-responses/:blockLoaner', (request, response) => {
-  const query = "SELECT email FROM FormResponses WHERE blockloaner = ? ORDER BY checkedTime DESC LIMIT 1;";
+service.get('/form-responses/:blockLoaner', (request, response) => {
+  const query = "SELECT email FROM FormResponses WHERE blockLoaner = ? ORDER BY checkedTime DESC LIMIT 1;";
   params =[request.params.blockLoaner]
 
   connection.query(query, params, (error, rows) => {
