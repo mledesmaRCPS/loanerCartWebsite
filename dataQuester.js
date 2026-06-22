@@ -335,7 +335,7 @@ service.post('/formResponses', (request, response) => {
     response.status(400);
     response.json({
       ok: false,
-      results: 'YOU DIDN"T PUT IN THE CORRECT VALUES FOR FORM RESPONSES, CHECK THEM AGAIN!!!',
+      results: parameters,
     });
   }
 });
