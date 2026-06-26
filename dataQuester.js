@@ -98,7 +98,9 @@ service.get('/block-loaners', (request, response) => {
 // GET STATUS OF SPECIFIC BLOCK LOANER
 service.get('/block-loaners/:blockLoaner', (request, response) => {
   const query = "SELECT blStatus FROM BlockLoaners WHERE loanerNumber = ?;";
-  connection.query(query, (error, rows) => {
+  params = [request.params.username];
+
+  connection.query(query, params, (error, rows) => {
     if (error) {
       response.status(500);
       response.json({
@@ -240,6 +242,7 @@ service.get('/form-responses/:blockLoaner', (request, response) => {
 // GET LAST 5 CHECKOUTS OF A CERTAIN BLOCK LOANER ALONG WITH WHO IT WAS
 service.get('/blockLoanerOuts/:blockLoaner', (request, response) => {
   const query = "SELECT fr.checkedTime, fr.reason, fr.email, st.first_name, st.last_name, st.id FROM FormResponses fr INNER JOIN Students st ON fr.email = st.email WHERE fr.blStatus = 0 AND fr.blockLoaner = ? ORDER BY fr.checkedTime DESC LIMIT 5;"
+  params = [request.params.blockLoaner];
   connection.query(query, (error, rows) => {
     if (error) {
       response.status(500);
@@ -260,7 +263,8 @@ service.get('/blockLoanerOuts/:blockLoaner', (request, response) => {
 // GET LAST 5 CHECKINS OF A CERTAIN BLOCK LOANER ALONG WITH WHO IT WAS
 service.get('/blockLoanerIns/:blockLoaner', (request, response) => {
   const query = "SELECT fr.checkedTime, fr.reason, fr.email, st.first_name, st.last_name, st.id FROM FormResponses fr INNER JOIN Students st ON fr.email = st.email WHERE fr.blStatus = 1 AND fr.blockLoaner = ? ORDER BY fr.checkedTime DESC LIMIT 5;"
-  connection.query(query, (error, rows) => {
+  params = [request.params.blockLoaner];
+  connection.query(query, params, (error, rows) => {
     if (error) {
       response.status(500);
       response.json({
@@ -277,10 +281,11 @@ service.get('/blockLoanerIns/:blockLoaner', (request, response) => {
   });
 });
 
-// GET LAST 5 CHECKINS OF A CERTAIN BLOCK LOANER ALONG WITH WHO IT WAS
+// GET LAST 10 ACTIVITIES OF A CERTAIN BLOCK LOANER ALONG WITH WHO IT WAS
 service.get('/blockLoanerActivities/:blockLoaner', (request, response) => {
   const query = "SELECT fr.checkedTime, fr.reason, fr.email, st.first_name, st.last_name, st.id FROM FormResponses fr INNER JOIN Students st ON fr.email = st.email WHERE fr.blockLoaner = ? ORDER BY fr.checkedTime DESC LIMIT 10;"
-  connection.query(query, (error, rows) => {
+  params = [request.params.blockLoaner];
+  connection.query(query, params, (error, rows) => {
     if (error) {
       response.status(500);
       response.json({
