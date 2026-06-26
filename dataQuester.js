@@ -101,7 +101,7 @@ service.get('/block-loaners', (request, response) => {
 // GET STATUS OF SPECIFIC BLOCK LOANER
 service.get('/block-loaners/:blockLoaner', (request, response) => {
   const query = "SELECT blStatus FROM BlockLoaners WHERE loanerNumber = ?;";
-  params = [request.params.username];
+  params = [request.params.blockLoaner];
 
   connection.query(query, params, (error, rows) => {
     if (error) {
