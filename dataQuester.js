@@ -95,6 +95,26 @@ service.get('/block-loaners', (request, response) => {
     }
   });
 });
+// GET STATUS OF SPECIFIC BLOCK LOANER
+service.get('/block-loaners/:blockLoaner', (request, response) => {
+  const query = "SELECT blStatus FROM BlockLoaners WHERE loanerNumber = ?;";
+  connection.query(query, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok:true,
+        results: rows.map(rowOfBL)
+      })
+    }
+  });
+});
+
 // GET ALL BLOCK LOANERS THAT ARE IN
 service.get('/block-loaners-in', (request, response) => {
   const query = "SELECT * FROM BlockLoaners WHERE blStatus = 1";
@@ -238,8 +258,28 @@ service.get('/blockLoanerOuts/:blockLoaner', (request, response) => {
 });
 
 // GET LAST 5 CHECKINS OF A CERTAIN BLOCK LOANER ALONG WITH WHO IT WAS
-service.get('/blockLoanerOuts/:blockLoaner', (request, response) => {
+service.get('/blockLoanerIns/:blockLoaner', (request, response) => {
   const query = "SELECT fr.checkedTime, fr.reason, fr.email, st.first_name, st.last_name, st.id FROM FormResponses fr INNER JOIN Students st ON fr.email = st.email WHERE fr.blStatus = 1 AND fr.blockLoaner = ? ORDER BY fr.checkedTime DESC LIMIT 5;"
+  connection.query(query, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok:true,
+        results: rows.map(rowOfLoanerStatuses)
+      })
+    }
+  });
+});
+
+// GET LAST 5 CHECKINS OF A CERTAIN BLOCK LOANER ALONG WITH WHO IT WAS
+service.get('/blockLoanerActivities/:blockLoaner', (request, response) => {
+  const query = "SELECT fr.checkedTime, fr.reason, fr.email, st.first_name, st.last_name, st.id FROM FormResponses fr INNER JOIN Students st ON fr.email = st.email WHERE fr.blockLoaner = ? ORDER BY fr.checkedTime DESC LIMIT 10;"
   connection.query(query, (error, rows) => {
     if (error) {
       response.status(500);
