@@ -71,6 +71,9 @@ function rowOfConfirmedStudent(row) {
 function rowOfEmail(row) {
   return {email: row.email,}
 }
+function rowOfBlStatus(row) {
+  return {blStatus: row.blStatus,}
+}
 
 service.use(express.json());
 /*
@@ -111,7 +114,7 @@ service.get('/block-loaners/:blockLoaner', (request, response) => {
     else {
       response.json({
         ok:true,
-        results: rows.map(rowOfBL)
+        results: rows.map(rowOfBlStatus)
       })
     }
   });
