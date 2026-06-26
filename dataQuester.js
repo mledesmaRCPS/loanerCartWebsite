@@ -54,11 +54,12 @@ function rowOfResponses(row) {
 
 function rowOfLoanerStatuses(row) {
   return {
-    loanerNumber: row.loanerNumber,
-    inOut: row.blStatus,
-    firstName: row.first_name,
-    lastName: row.last_name,
     checkedTime: row.checkedTime,
+    reason: row.reason,
+    email: row.email,
+    first_name: row.first_name,
+    last_name: row.last_name,
+    id: row.id,
   }
 }
 
@@ -216,9 +217,9 @@ service.get('/form-responses/:blockLoaner', (request, response) => {
   });
 });
 
-// GET ALL BLOCK LOANERS AND WHO CHECK THEM OUT OR IF THEY ARE IN WITH TIMES
-service.get('/blockLoaners', (request, response) => {
-  const query = "SELECT bl.loanerNumber, bl.blStatus, st.first_name, st.last_name, fr.checkedTime FROM BlockLoaners bl INNER JOIN FormResponses fr on bl.loanerNumber = fr.blockLoaner INNER JOIN Students st on fr.email = st.email;"
+// GET LAST 5 CHECKOUTS OF A CERTAIN BLOCK LOANER ALONG WITH WHO IT WAS
+service.get('/blockLoanerOuts/:blockLoaner', (request, response) => {
+  const query = "SELECT fr.checkedTime, fr.reason, fr.email, st.first_name, st.last_name, st.id FROM FormResponses fr INNER JOIN Students st ON fr.email = st.email WHERE fr.blStatus = 0 AND fr.blockLoaner = ? ORDER BY fr.checkedTime DESC LIMIT 5;"
   connection.query(query, (error, rows) => {
     if (error) {
       response.status(500);
@@ -236,6 +237,25 @@ service.get('/blockLoaners', (request, response) => {
   });
 });
 
+// GET LAST 5 CHECKINS OF A CERTAIN BLOCK LOANER ALONG WITH WHO IT WAS
+service.get('/blockLoanerOuts/:blockLoaner', (request, response) => {
+  const query = "SELECT fr.checkedTime, fr.reason, fr.email, st.first_name, st.last_name, st.id FROM FormResponses fr INNER JOIN Students st ON fr.email = st.email WHERE fr.blStatus = 1 AND fr.blockLoaner = ? ORDER BY fr.checkedTime DESC LIMIT 5;"
+  connection.query(query, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok:true,
+        results: rows.map(rowOfLoanerStatuses)
+      })
+    }
+  });
+});
 /*
 ASK ABOUT HOW THE LATE RETURNER THINGS WORK, DOSE IT GO INTO THE NEXT DAY AND WHAT DOES
 RE-ELIGIBLE MEAN
