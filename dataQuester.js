@@ -98,6 +98,28 @@ service.get('/block-loaners', (request, response) => {
     }
   });
 });
+// GET INFO OF SPECIFIC BLOCK LOANER
+service.get('/block-loaners/:blockLoaner', (request, response) => {
+  const query = "SELECT * FROM BlockLoaners WHERE loanerNumber = ?;";
+  params = [request.params.blockLoaner];
+
+  connection.query(query, params, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok:true,
+        results: rows.map(rowOfBL)
+      })
+    }
+  });
+});
+
 // GET STATUS OF SPECIFIC BLOCK LOANER
 service.get('/block-loaners/:blockLoaner', (request, response) => {
   const query = "SELECT blStatus FROM BlockLoaners WHERE loanerNumber = ?;";
