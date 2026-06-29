@@ -99,7 +99,7 @@ service.get('/block-loaners', (request, response) => {
   });
 });
 // GET INFO OF SPECIFIC BLOCK LOANER
-service.get('/block-loaners/:blockLoaner', (request, response) => {
+service.get('/block-loaner/:blockLoaner', (request, response) => {
   const query = "SELECT * FROM BlockLoaners WHERE loanerNumber = ?;";
   params = [request.params.blockLoaner];
 
