@@ -509,14 +509,12 @@ service.patch('/blockLoanerIn/:loanerNumber', (request, response) => {
 // THIS IS FOR UPDATING AN ENTIRE BLOCK LOANER IN CASE IT BREAKS OR SOMETHING
 service.patch('/blockLoaners/:loanerNumber', (request, response) => {
   const parameters = [
-    parseInt(request.body.loanerNumber),
     parseInt(request.body.id),
     request.body.serialNumber,
-    parseInt(request.body.blStatus),
-    parseInt(request.params.loanerNumber)
+    parseInt(request.params.loanerNumber),
   ];
 
-  const query = 'UPDATE BlockLoaners SET loanerNumber = ?, id = ?, serialNumber = ?, blStatus = ? WHERE loanerNumber = ?';
+  const query = 'UPDATE BlockLoaners SET id = ?, serialNumber = ? WHERE loanerNumber = ?';
   connection.query(query, parameters, (error, result) => {
     if (error) {
       response.status(404);
