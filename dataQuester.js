@@ -287,7 +287,7 @@ service.get('/blockLoanerOut/:blockLoaner', (request, response) => {
 
 // GET LAST 5 CHECKOUTS OF A CERTAIN BLOCK LOANER ALONG WITH WHO IT WAS
 service.get('/lastBlockLoanerOut/:blockLoaner', (request, response) => {
-  const query = "SELECT fr.checkedTime, fr.reason, fr.email, st.first_name, st.last_name, st.id FROM FormResponses fr INNER JOIN Students st ON fr.email = st.email WHERE fr.blStatus = 0 AND fr.blockLoaner = ? ORDER BY fr.checkedTime DESC LIMIT 5;"
+  const query = "SELECT fr.checkedTime, fr.reason, fr.email, st.first_name, st.last_name, st.id FROM FormResponses fr INNER JOIN Students st ON fr.email = st.email WHERE fr.blockLoaner = ? ORDER BY fr.checkedTime DESC LIMIT 1;"
   params = [request.params.blockLoaner];
   connection.query(query, (error, rows) => {
     if (error) {
