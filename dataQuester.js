@@ -284,6 +284,26 @@ service.get('/lastBlockLoanerOut/:blockLoaner', (request, response) => {
     }
   });
 });
+// GET LAST CHECK IN OF A CERTAIN BLOCK LOANER
+service.get('/lastBlockLoanerIn/:blockLoaner', (request, response) => {
+  const query = "SELECT fr.checkedTime, fr.reason, fr.email, st.first_name, st.last_name, st.id FROM FormResponses fr INNER JOIN Students st ON fr.email = st.email WHERE fr.blStatus = 1 AND fr.blockLoaner = ? ORDER BY fr.checkedTime DESC LIMIT 1;"
+  params = [request.params.blockLoaner];
+  connection.query(query, params, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok:true,
+        results: rows.map(rowOfLoanerStatuses)
+      })
+    }
+  });
+});
 
 // GET LAST 5 CHECKOUTS OF A CERTAIN BLOCK LOANER ALONG WITH WHO IT WAS
 service.get('/blockLoanerOuts/:blockLoaner', (request, response) => {
