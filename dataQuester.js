@@ -419,7 +419,7 @@ service.post('/blockLoaners', (request, response) => {
   }
 });
 //UPLOAD INFORMATION ABOUT A SUTDENT
-service.post('/students', (request, response) => {
+service.post('/student', (request, response) => {
   if (request.body.hasOwnProperty('id') &&
   request.body.hasOwnProperty('email') &&
   request.body.hasOwnProperty('first_name') &&
