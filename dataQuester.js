@@ -223,6 +223,94 @@ service.get('/students/:username', (request, response) => {
   });
 });
 
+//GET STUDENT WHERE ID IS LIKE
+service.get('/studentsID', (request, response) => {
+  const query = "SELECT * FROM Students WHERE id LIKE CONCAT(?,'%');";
+  params = parseInt(request.body.id);
+
+  connection.query(query, params, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok:true,
+        results: rows.map(rowOfStudent)
+      })
+    }
+  });
+});
+
+//GET STUDENT WHERE FIRST NAME IS LIKE
+service.get('/studentsFirstName', (request, response) => {
+  const query = "SELECT * FROM Students WHERE first_name LIKE CONCAT('%',?,'%');";
+  params = request.body.first_name;
+
+  connection.query(query, params, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok:true,
+        results: rows.map(rowOfStudent)
+      })
+    }
+  });
+});
+
+//GET STUDENT WHERE LAST NAME IS LIKE
+service.get('/studentsLastName', (request, response) => {
+  const query = "SELECT * FROM Students WHERE last_name LIKE CONCAT('%',?,'%');";
+  params = request.body.last_last;
+
+  connection.query(query, params, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok:true,
+        results: rows.map(rowOfStudent)
+      })
+    }
+  });
+});
+
+//GET STUDENT WHERE EMAIL IS LIKE
+service.get('/studentsEmail', (request, response) => {
+  const query = "SELECT * FROM Students WHERE first_name LIKE CONCAT('%',?,'%');";
+  params = request.body.first_name;
+
+  connection.query(query, params, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok:true,
+        results: rows.map(rowOfStudent)
+      })
+    }
+  });
+});
+
 // GET ALL FORM RESPONSES
 service.get('/form-responses', (request, response) => {
   const query = "SELECT * FROM FormResponses;";
