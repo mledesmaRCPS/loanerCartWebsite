@@ -74,6 +74,13 @@ function rowOfEmail(row) {
 function rowOfBlStatus(row) {
   return {blStatus: row.blStatus,}
 }
+function rowOfFreqFly(row) {
+  return {
+    outs: row.outs,
+    first_name: row.first_name,
+    last_name: row.last_name,
+  }
+}
 
 service.use(express.json());
 /*
@@ -451,6 +458,26 @@ service.get('/blockLoanerActivities/:blockLoaner', (request, response) => {
       response.json({
         ok:true,
         results: rows.map(rowOfLoanerStatuses)
+      })
+    }
+  });
+});
+
+service.get('frequentFlyers/:days', (request, response) => {
+  const query = "SELECT COUNT(*) AS outs, st.first_name, st.last_name FROM FormResponses fr INNER JOIN Students st ON fr.email = st.email WHERE fr.blStatus = 0 AND fr.checkedTime >= CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY fr.email, st.first_name, st.last_name HAVING Count(*) >4;"
+  params = [request.params.days];
+  connection.query(query, params, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok: true,
+        results: rows.map(rowOfFreqFly)
       })
     }
   });
