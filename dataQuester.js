@@ -246,9 +246,9 @@ service.get('/studentsID/:id', (request, response) => {
 });
 
 //GET STUDENT WHERE FIRST NAME IS LIKE
-service.get('/studentsFirstName', (request, response) => {
+service.get('/studentsFirstName/:first_name', (request, response) => {
   const query = "SELECT * FROM Students WHERE first_name LIKE CONCAT('%',?,'%');";
-  params = request.body.first_name;
+  params = [request.params.first_name]
 
   connection.query(query, params, (error, rows) => {
     if (error) {
@@ -268,9 +268,9 @@ service.get('/studentsFirstName', (request, response) => {
 });
 
 //GET STUDENT WHERE LAST NAME IS LIKE
-service.get('/studentsLastName', (request, response) => {
+service.get('/studentsLastName/:last_name', (request, response) => {
   const query = "SELECT * FROM Students WHERE last_name LIKE CONCAT('%',?,'%');";
-  params = request.body.last_last;
+  params = [request.params.last_name]
 
   connection.query(query, params, (error, rows) => {
     if (error) {
@@ -290,9 +290,9 @@ service.get('/studentsLastName', (request, response) => {
 });
 
 //GET STUDENT WHERE EMAIL IS LIKE
-service.get('/studentsEmail', (request, response) => {
+service.get('/studentsEmail/:email', (request, response) => {
   const query = "SELECT * FROM Students WHERE first_name LIKE CONCAT('%',?,'%');";
-  params = request.body.first_name;
+  params = [request.params.email];
 
   connection.query(query, params, (error, rows) => {
     if (error) {
