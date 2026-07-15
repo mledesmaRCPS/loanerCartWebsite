@@ -463,7 +463,7 @@ service.get('/blockLoanerActivities/:blockLoaner', (request, response) => {
   });
 });
 
-service.get('frequentFlyers/:days', (request, response) => {
+service.get('/frequentFlyers/:days', (request, response) => {
   const query = "SELECT COUNT(*) AS outs, st.first_name, st.last_name FROM FormResponses fr INNER JOIN Students st ON fr.email = st.email WHERE fr.blStatus = 0 AND fr.checkedTime >= CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY fr.email, st.first_name, st.last_name HAVING Count(*) >4;"
   params = [request.params.days];
   connection.query(query, params, (error, rows) => {
