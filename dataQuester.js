@@ -224,9 +224,9 @@ service.get('/students/:username', (request, response) => {
 });
 
 //GET STUDENT WHERE ID IS LIKE
-service.get('/studentsID', (request, response) => {
+service.get('/studentsID/:id', (request, response) => {
   const query = "SELECT * FROM Students WHERE id LIKE CONCAT(?,'%');";
-  params = parseInt(request.body.id);
+  params = [request.params.id];
 
   connection.query(query, params, (error, rows) => {
     if (error) {
