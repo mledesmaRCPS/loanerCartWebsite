@@ -291,7 +291,7 @@ service.get('/studentsLastName/:last_name', (request, response) => {
 
 //GET STUDENT WHERE EMAIL IS LIKE
 service.get('/studentsEmail/:email', (request, response) => {
-  const query = "SELECT * FROM Students WHERE first_name LIKE CONCAT('%',?,'%');";
+  const query = "SELECT * FROM Students WHERE email LIKE CONCAT('%',?,'%');";
   params = [request.params.email];
 
   connection.query(query, params, (error, rows) => {
