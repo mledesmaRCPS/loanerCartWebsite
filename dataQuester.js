@@ -688,6 +688,32 @@ service.patch('/blockLoaners/:loanerNumber', (request, response) => {
   });
 });
 
+// DELETE REQUESTS START HERE
+
+// THIS IS WHERE BLOCK LOANERS GET DELETED FOR SOME REASON, MAYBE GOOD
+service.delete('/blockLoanerDelete/:loanerNumber', (request, response) => {
+  const parameters = [
+    parseInt(request.params.loanerNumber)
+  ]
+
+  const query = 'DELETE FROM BlockLoaners WHERE loanerNumber = ?';
+  connection.query(query, parameters, (error, result) => {
+    if (error) {
+      response.status(404);
+      response.json({
+        ok: false,
+        results: error.message,
+      });
+    }
+    else {
+      response.json({
+        ok: true,
+        results: 'Block Loaner deleted successfully!'
+      });
+    }
+  })
+});
+
 
 // PORT THE PROGRAM IS ALIVE ON
 
