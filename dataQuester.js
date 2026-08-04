@@ -81,6 +81,12 @@ function rowOfFreqFly(row) {
     last_name: row.last_name,
   }
 }
+function rowOfDoughnut(row) {
+  return {
+    reason: row.reason,
+    frequency: row.frequency,
+  }
+}
 
 service.use(express.json());
 /*
@@ -482,6 +488,27 @@ service.get('/frequentFlyers/:days', (request, response) => {
     }
   });
 });
+
+//GET STATS FOR DOUGHNUT CHART
+service.get('/doughnut', (request, response) => {
+  const query = "SELECT reason, COUNT(*) as frequency FROM FormResponses WHERE reason <> 'Return' AND reason <> 'Admin Return' GROUP BY reason;";
+  connection.query(query, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      })
+    }
+    else {
+      response.json({
+        ok: true,
+        results: rows.map(rowOfDoughnut)
+      })
+    }
+  })
+})
+
 /*
 ASK ABOUT HOW THE LATE RETURNER THINGS WORK, DOSE IT GO INTO THE NEXT DAY AND WHAT DOES
 RE-ELIGIBLE MEAN
