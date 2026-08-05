@@ -87,6 +87,12 @@ function rowOfDoughnut(row) {
     frequency: row.frequency,
   }
 }
+function rowOfLineChart(row) {
+  return {
+    month: row.month,
+    checkouts: row.checkouts,
+  }
+}
 
 service.use(express.json());
 /*
@@ -504,6 +510,26 @@ service.get('/doughnut', (request, response) => {
       response.json({
         ok: true,
         results: rows.map(rowOfDoughnut)
+      })
+    }
+  })
+})
+
+//GET STATS FOR LINE CHART
+service.get('/line', (request, response) => {
+  const query = "SELECT DATE_FORMAT(checkedTime, '%Y-%m') AS month, COUNT(*) AS checkouts FROM FormResponses GROUP BY Month ORDER BY Month;"
+  connection.query(query, (error, rows) => {
+    if (error) {
+      response.status(500);
+      response.json({
+        ok: false,
+        results: error.message,
+      })
+    }
+    else {
+      response.json({
+        ok: true,
+        results: rows.map(rowOfLineChart)
       })
     }
   })
