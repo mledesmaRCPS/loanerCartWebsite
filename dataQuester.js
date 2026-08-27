@@ -517,7 +517,7 @@ service.get('/doughnut', (request, response) => {
 
 //GET STATS FOR LINE CHART
 service.get('/line', (request, response) => {
-  const query = "SELECT DATE_FORMAT(checkedTime, '%Y-%m') AS Month, COUNT(*) AS checkouts FROM FormResponses WHERE blStatus = 0 GROUP BY Month ORDER BY Month;"
+  const query = "SELECT DATE_FORMAT(checkedTime, '%Y-%m') AS month, COUNT(*) AS checkouts FROM FormResponses WHERE blStatus = 0 GROUP BY month ORDER BY month;"
   connection.query(query, (error, rows) => {
     if (error) {
       response.status(500);
